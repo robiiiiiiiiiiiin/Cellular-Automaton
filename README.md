@@ -1,6 +1,6 @@
 # Cellular Automaton
 
-A JavaScript Cellular automaton (or like like automaton) with some controlls to play with the life rules 
+A JavaScript Cellular automaton (life like automaton) with some controlls to play with the life rules 
 
 ## Installation
 
