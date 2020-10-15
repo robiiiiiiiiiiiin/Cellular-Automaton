@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life like Cellular Automaton </title>
+    <style>
+      body {
+        margin: 0;
+        background: black;
+        color: white;
+        width: 100vw;
+        height: 100vh;
+        font-family: monospace;
+      }
+      header {
+        user-select: none;
+        box-sizing: border-box;
+        /* height: 3.2rem; */
+        padding: 0.4rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-bottom: solid white 1px;
+        display: flex;
+        justify-content: space-between;
+        text-transform: uppercase;
+      }
+      header span {
+        color: tomato;
+      }
+      .rule-group {
+        display: flex;
+      }
+      .rule {
+        cursor: pointer;
+        color: grey;
+      }
+      .rule.applied {
+        color: tomato;
+      }
+      canvas {
+        background: black;
+        display: block;
+        width: 100vw;
+        height: calc(100% - 3.2rem);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        Fps <span>w,s</span>
+        Pause <span>p</span>
+        Grid size <span>z,h</span>
+        <br>
+        map type <span>m</span>
+        Reset <span>r</span>
+        Initial birth <span>a,d</span>
+      </div>
+      <div>
+        Click to change rules
+        <div class="rule-group">
+          <span>b</span>
+          <span class="rule" data-rule-type="b" data-rule-num="0">0</span>
+          <span class="rule" data-rule-type="b" data-rule-num="1">1</span>
+          <span class="rule" data-rule-type="b" data-rule-num="2">2</span>
+          <span class="rule" data-rule-type="b" data-rule-num="3">3</span>
+          <span class="rule" data-rule-type="b" data-rule-num="4">4</span>
+          <span class="rule" data-rule-type="b" data-rule-num="5">5</span>
+          <span class="rule" data-rule-type="b" data-rule-num="6">6</span>
+          <span class="rule" data-rule-type="b" data-rule-num="7">7</span>
+          <span class="rule" data-rule-type="b" data-rule-num="8">8</span>
+           / <span>s</span>
+          <span class="rule" data-rule-type="s" data-rule-num="0">0</span>
+          <span class="rule" data-rule-type="s" data-rule-num="1">1</span>
+          <span class="rule" data-rule-type="s" data-rule-num="2">2</span>
+          <span class="rule" data-rule-type="s" data-rule-num="3">3</span>
+          <span class="rule" data-rule-type="s" data-rule-num="4">4</span>
+          <span class="rule" data-rule-type="s" data-rule-num="5">5</span>
+          <span class="rule" data-rule-type="s" data-rule-num="6">6</span>
+          <span class="rule" data-rule-type="s" data-rule-num="7">7</span>
+          <span class="rule" data-rule-type="s" data-rule-num="8">8</span>
+        </div>
+      </div>
+      <div>
+        Grid size <span id="tileSize"></span>
+        Initial birth: <span id="aliveProb"></span>
+        <br>
+        Map: <span id="map" data-flat-torus="Flat Torus" data-rectangle="Rectangle"></span>
+        fps <span id="fps"></span>
+        frame <span id="nbIter"></span>
+      </div>
+    </header>
+    <canvas></canvas>
+    <script src="bundle.js"></script>
+  </body>
+</html>
