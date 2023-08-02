@@ -1,66 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life like Cellular Automaton </title>
-    <style>
-      body {
-        margin: 0;
-        background: black;
-        color: white;
-        width: 100vw;
-        height: 100vh;
-        font-family: monospace;
-      }
-      header {
-        user-select: none;
-        box-sizing: border-box;
-        /* height: 3.2rem; */
-        padding: 0.4rem;
-        font-weight: bold;
-        font-size: 1rem;
-        border-bottom: solid white 1px;
-        display: flex;
-        justify-content: space-between;
-        text-transform: uppercase;
-      }
-      header span {
-        color: tomato;
-      }
-      .rule-group {
-        display: flex;
-      }
-      .rule {
-        cursor: pointer;
-        color: grey;
-      }
-      .rule.applied {
-        color: tomato;
-      }
-      canvas {
-        background: black;
-        display: block;
-        width: 100vw;
-        height: calc(100% - 3.2rem);
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div>
-        Fps <span>w,s</span>
-        Pause <span>p</span>
-        Grid size <span>z,h</span>
-        <br>
-        map type <span>m</span>
-        Reset <span>r</span>
-        Initial birth <span>a,d</span>
-      </div>
-      <div>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life like Cellular Automaton </title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      width: 100vw;
+      height: 100vh;
+      font-family: monospace;
+    }
+
+    input,
+    button {
+      font-family: monospace;
+    }
+
+    header {
+      user-select: none;
+      box-sizing: border-box;
+      /* height: 3.2rem; */
+      padding: 0.4rem 3vw;
+      font-weight: bold;
+      font-size: 1rem;
+      border-bottom: solid white 1px;
+      display: flex;
+      text-transform: uppercase;
+    }
+
+    header input,
+    header button {
+      text-transform: uppercase;
+    }
+
+    /* RULES */
+    .rules-wrapper {
+      display: flex;
+      flex-direction: column;
+      margin-right: auto;
+      padding: 10px 0px;
+    }
+
+    .rules-wrapper>.label {
+      margin-bottom: 12px;
+    }
+
+    .birth-group,
+    .survival-group {
+      display: flex;
+      font-size: 18px;
+    }
+
+    .birth-group .label,
+    .survival-group .label {
+      min-width: 10ch;
+    }
+
+    /* DASHBOARD */
+    .dashboard {
+      display: grid;
+      align-items: center;
+      margin-right: 80px;
+    }
+
+    .dashboard label,
+    .dashboard .unit {
+      margin-right: 22px;
+    }
+
+    .dashboard input {
+      width: 4ch;
+    }
+
+    .dashboard .unit {
+      color: tomato;
+    }
+
+    .dashboard.first {
+      grid-template-columns: repeat(4, auto);
+      grid-template-rows: repeat(3, 34px);
+    }
+
+    .dashboard.second {
+      grid-template-columns: repeat(1, auto);
+      padding-top: 6px;
+    }
+
+    .frame-wrapper {
+      padding-top: 6px;
+    }
+
+    .buttons.one {
+      margin-bottom: 12px;
+    }
+
+    .map-type-buttons-wrapper {
+      display: flex;
+      margin-bottom: 12px;
+    }
+
+    .map-type-buttons-wrapper button.current {
+      border-color: tomato;
+    }
+
+    .map-type-buttons-wrapper #flatTorusButton:not(.current) {
+      border-right: none;
+    }
+
+    .map-type-buttons-wrapper #closedButton:not(.current) {
+      border-left: none;
+    }
+
+    #nbIter {
+      min-width: 4ch;
+      display: inline-block;
+    }
+
+    /* INPUTS */
+    .dashboard input {
+      margin: 0;
+      border: 0;
+      padding: 0;
+      display: inline-block;
+      vertical-align: middle;
+      white-space: normal;
+      background: none;
+      font-size: 16px;
+      color: tomato;
+      font-weight: bold;
+    }
+
+    .dashboard input:focus {
+      outline: none;
+      border: none;
+    }
+
+    /* BUTTONS */
+    .dashboard button {
+      cursor: pointer;
+      background: none;
+      border: 1px solid white;
+      color: white;
+    }
+
+    .dashboard button:hover {
+      border-color: tomato;
+    }
+
+    .dashboard.first button {
+      width: 28px;
+      height: 24px;
+    }
+
+    .dashboard.second button {
+      font-size: 16px;
+      padding: 4px 18px;
+    }
+
+    /* REMOVE INPUT ARROWS */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    header span {
+      color: tomato;
+    }
+
+    .rule-group {
+      display: flex;
+    }
+
+    .rule {
+      cursor: pointer;
+      color: grey;
+    }
+
+    .rule.applied {
+      color: tomato;
+    }
+
+    canvas {
+      background: black;
+      display: block;
+      width: 100vw;
+      height: calc(100% - 118px);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+
+    <div class="rules-wrapper">
+      <label class="label">
         Click to change rules
-        <div class="rule-group">
-          <span>b</span>
+      </label>
+      <div class="birth-group">
+        <span class="label">BIRTH:</span>
+        <div class="rules">
           <span class="rule" data-rule-type="b" data-rule-num="0">0</span>
           <span class="rule" data-rule-type="b" data-rule-num="1">1</span>
           <span class="rule" data-rule-type="b" data-rule-num="2">2</span>
@@ -70,7 +217,11 @@
           <span class="rule" data-rule-type="b" data-rule-num="6">6</span>
           <span class="rule" data-rule-type="b" data-rule-num="7">7</span>
           <span class="rule" data-rule-type="b" data-rule-num="8">8</span>
-           / <span>s</span>
+        </div>
+      </div>
+      <div class="survival-group">
+        <span class="label">SURVIVAL:</span>
+        <div class="rules">
           <span class="rule" data-rule-type="s" data-rule-num="0">0</span>
           <span class="rule" data-rule-type="s" data-rule-num="1">1</span>
           <span class="rule" data-rule-type="s" data-rule-num="2">2</span>
@@ -82,16 +233,63 @@
           <span class="rule" data-rule-type="s" data-rule-num="8">8</span>
         </div>
       </div>
-      <div>
-        Grid size <span id="tileSize"></span>
-        Initial birth: <span id="aliveProb"></span>
-        <br>
-        Map: <span id="map" data-flat-torus="Flat Torus" data-rectangle="Rectangle"></span>
-        fps <span id="fps"></span>
-        frame <span id="nbIter"></span>
+    </div>
+
+    <div class="dashboard first">
+
+      <label>Fps:</label>
+      <input type="number" min="1" id="fps" name="fps">
+      <div class="unit">fps</div>
+      <div class="quantity-buttons">
+        <button class="minus" data-field="fps">–</button>
+        <button class="plus" data-field="fps">+</button>
       </div>
-    </header>
-    <canvas></canvas>
-    <script src="bundle.js"></script>
-  </body>
+
+      <label>Grid size:</label>
+      <input type="number" min="10" max="500" step="10" id="tileSize" name="tileSize">
+      <div class="unit">px</div>
+      <div class="quantity-buttons">
+        <button class="minus" data-field="tileSize">–</button>
+        <button class="plus" data-field="tileSize">+</button>
+      </div>
+
+      <label>Initial birth:</label>
+      <input type="number" min="0" max="100" id="aliveProb" name="aliveProb">
+      <div class="unit">%</div>
+      <div class="quantity-buttons">
+        <button class="minus" data-field="aliveProb">–</button>
+        <button class="plus" data-field="aliveProb">+</button>
+      </div>
+
+    </div>
+
+    </div>
+
+    <div class="dashboard second">
+
+      <div class="buttons one">
+        <button id="playPauseButton">Pause</button>
+        <button id="resetButton">Reset</button>
+      </div>
+
+      <div>
+        <label>Map type:</label>
+        <div class="map-type-buttons-wrapper">
+          <button id="flatTorusButton" class="current">Flat torus</button>
+          <button id="closedButton">Closed</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="frame-wrapper">
+      <label>Frame:</label>
+      <span id="nbIter"></span>
+    </div>
+
+  </header>
+  <canvas></canvas>
+  <script src="bundle.js"></script>
+</body>
+
 </html>
